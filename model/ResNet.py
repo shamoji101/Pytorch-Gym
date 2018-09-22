@@ -9,7 +9,7 @@ You can get the paper of ResNet from
 https://arxiv.org/abs/1512.03385
 this page.
 
-There is all model which is ResNet 18, 34, 50, 101 and 152 model.
+There is all ResNet model which is ResNet 18, 34, 50, 101 and 152 model.
 
 """
 
@@ -120,11 +120,10 @@ class IncreaseChannel_ResBlock(nn.Module):
 class pre_act_ResBlock(nn.Module):
 
     """
+
     This code acordding to this paper from
     https://arxiv.org/abs/1603.05027
     "Identity Mappings in Deep Residual Networks"
-    
-    
 
     """
     def __init__(self, Channel, Kernel_size=3, Padding=1, use_dropout=True):
