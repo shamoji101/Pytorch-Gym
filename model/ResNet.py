@@ -118,6 +118,15 @@ class IncreaseChannel_ResBlock(nn.Module):
         return out
 
 class pre_act_ResBlock(nn.Module):
+
+    """
+    This code acordding to this paper from
+    https://arxiv.org/abs/1603.05027
+    "Identity Mappings in Deep Residual Networks"
+    
+    
+
+    """
     def __init__(self, Channel, Kernel_size=3, Padding=1, use_dropout=True):
         super(pre_act_ResBlock, self).__init__()
         
@@ -146,7 +155,45 @@ class pre_act_ResBlock(nn.Module):
         
         return y
 
+class pre_act_ResBottleneck(nn.Module):
+
+    def __init__(self, Channel, Kernel_size=3, Padding=1, use_dropout=True):
+        super(pre_act_ResBottleneck, self).__init__()
         
+        self.K = Kernel_size
+        self.P = Padding
+        self.C_small = self.C//4
+        self.use_dropout = use_dropout
+        
+        self.FirstConv = nn.Conv2d(self.C, self.C_small, kernel_size=1)
+        self.bn1 = nn.BatchNorm2d(self.C_small)
+        self.BottleneckConv = nn.Conv2d(self.C_small, self.C_small, kernel_size=self.K, padding=self.P)
+        self.bn2 = nn.BatchNorm2d(self.C_small)
+        self.LastConv = nn.Conv2d(self.C_small, self.C, kernel_size=1)
+        self.bn3 = nn.BatchNorm2d(self.C)
+        self.dropout = nn.Dropout(p=0.25, inplace=False)
+        
+    
+    def forward(self, x): 
+        
+        out = self.bn1(x)
+        out = F.relu(out)
+        out = self.FirstConv(out)
+        
+        out = self.bn2(out)
+        out = F.relu(out)
+        out = self.BottleneckConv(out)
+
+        out = self.bn3(out)
+        out = F.relu(out)
+        F_x = self.LastConv(out)
+        
+        if self.use_dropout:
+            F_x = self.dropout(F_x)
+
+        y = F_x + x #short cut
+        
+        return y
         
 
     
