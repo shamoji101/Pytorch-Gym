@@ -329,6 +329,79 @@ class ResNet34_forCIFAR10(nn.Module):
         
         return x
     
+class ResNet50_forCIFAR10(nn.Module):
+
+    def __init__(self):
+        super(ResNet50_forCIFAR10, self).__init__()
+
+        self.FirstConv = IncreaseChannel_ResBlock(3, 64, kernel_size=3, stride=1, padding=1)
+
+        self.Conv2_1 = ResBottleneck(64, Kernel_size=3, Padding=1)
+        self.Conv2_2 = ResBottleneck(64, Kernel_size=3, Padding=1)
+        self.Conv2_3 = ResBottleneck(64, Kernel_size=3, Padding=1)
+
+        self.SecondConv = IncreaseChannel_ResBlock(64, 128, kernel_size=3, stride=1, padding=1)
+
+        self.Conv3_1 = ResBottleneck(128, Kernel_size=3, Padding=1)
+        self.Conv3_2 = ResBottleneck(128, Kernel_size=3, Padding=1)
+        self.Conv3_3 = ResBottleneck(128, Kernel_size=3, Padding=1)
+        self.Conv3_4 = ResBottleneck(128, Kernel_size=3, Padding=1)
+
+        self.ThirdConv = IncreaseChannel_ResBlock(128, 256, kernel_size=3, stride=1, padding=1)
+
+        self.Conv4_1 = ResBottleneck(256, Kernel_size=3, Padding=1)
+        self.Conv4_2 = ResBottleneck(256, Kernel_size=3, Padding=1)
+        self.Conv4_3 = ResBottleneck(256, Kernel_size=3, Padding=1)
+        self.Conv4_4 = ResBottleneck(256, Kernel_size=3, Padding=1)
+        self.Conv4_5 = ResBottleneck(256, Kernel_size=3, Padding=1)
+        self.Conv4_6 = ResBottleneck(256, Kernel_size=3, Padding=1)
+
+        self.LastConv = IncreaseChannel_ResBlock(256, 512, kernel_size=3, stride=1, padding=1)
+        
+        self.Conv5_1 = ResBottleneck(512, Kernel_size=3, Padding=1)
+        self.Conv5_2 = ResBottleneck(512, Kernel_size=3, Padding=1)
+        self.Conv5_3 = ResBottleneck(512, Kernel_size=3, Padding=1)
+
+        self.GAP = nn.AvgPool2d(4)
+        self.Dense = nn.Linear(512,10)
+
+
+    def forward(self, x):
+        
+        x = self.FirstConv(x)
+        
+        x = self.Conv2_1(x)
+        x = self.Conv2_2(x)
+        x = self.Conv2_3(x)
+        
+        x = self.SecondConv(x)
+        
+        x = self.Conv3_1(x)
+        x = self.Conv3_2(x)
+        x = self.Conv3_3(x)
+        x = self.Conv3_4(x)
+        
+        x = self.ThirdConv(x)
+
+        x = self.Conv4_1(x)
+        x = self.Conv4_2(x)
+        x = self.Conv4_3(x)
+        x = self.Conv4_4(x)
+        x = self.Conv4_5(x)
+        x = self.Conv4_6(x)
+
+        x = self.LastConv(x)
+        
+        x = self.Conv5_1(x)
+        x = self.Conv5_2(x)
+        x = self.Conv5_3(x)
+
+        x = self.GAP(x)
+        x = self.Dense(x)
+
+        return x
+
+    
 class ResNet18_ForCIFAR10_mobile(nn.Module):
     """
     this model is not powerful, but very highspeed.
