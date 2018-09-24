@@ -139,7 +139,7 @@ class IncreaseChannel_ResBottleneck(nn.Module):
         self.bn1 = nn.BatchNorm2d(self.M)
         self.use_dropout = use_dropout
         self.dropout = nn.Dropout(p=0.25, inplace=False)
-        self.SecondConv = nn.Conv2d(self.M, self.M, kernel_size=3, stride=2, padding=1)
+        self.SecondConv = nn.Conv2d(self.M, self.M, kernel_size=3, stride=self.S, padding=1)
         self.bn2 = nn.BatchNorm2d(self.M)
         self.LastConv = nn.Conv2d(self.M, self.A, kernel_size=1, padding=0)
         self.bn3 = nn.BatchNorm2d(self.A)
@@ -386,7 +386,7 @@ class ResNet50_forCIFAR10(nn.Module):
         self.Conv5_1 = ResBottleneck(2048, Kernel_size=3, Padding=1)
         self.Conv5_2 = ResBottleneck(2048, Kernel_size=3, Padding=1)
 
-        self.GAP = nn.AvgPool2d(2)
+        self.GAP = nn.AvgPool2d(4)
         self.Dense = nn.Linear(2048,10)
 
 
@@ -434,3 +434,4 @@ class ResNet101_ForCIFAR10(nn.Module):
 
         self.Conv2_1 = ResBottleneck(64, Kernel_size=3, Padding=1)
 """     
+
