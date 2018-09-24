@@ -140,7 +140,7 @@ class IncreaseChannel_ResBottleneck(nn.Module):
         self.use_dropout = use_dropout
         self.dropout = nn.Dropout(p=0.25, inplace=False)
         self.SecondConv = nn.Conv2d(self.M, self.M, kernel_size=3, stride=2, padding=1)
-        self.bn2 = nn.BatchNorm2d(self.I)
+        self.bn2 = nn.BatchNorm2d(self.M)
         self.LastConv = nn.Conv2d(self.M, self.A, kernel_size=1, padding=0)
         self.bn3 = nn.BatchNorm2d(self.A)
 
@@ -362,36 +362,32 @@ class ResNet50_forCIFAR10(nn.Module):
     def __init__(self):
         super(ResNet50_forCIFAR10, self).__init__()
 
-        self.FirstConv = IncreaseChannel_ResBlock(3, 256, kernel_size=3, stride=1, padding=1)
+        self.FirstConv = IncreaseChannel_ResBottleneck(3, 256, kernel_size=3, stride=1, padding=1, isFirstConv=True)
 
         self.Conv2_1 = ResBottleneck(256, Kernel_size=3, Padding=1)
         self.Conv2_2 = ResBottleneck(256, Kernel_size=3, Padding=1)
-        self.Conv2_3 = ResBottleneck(256, Kernel_size=3, Padding=1)
 
-        self.SecondConv = IncreaseChannel_ResBlock(256, 512, kernel_size=3, stride=2, padding=1)
+        self.SecondConv = IncreaseChannel_ResBottleneck(256, 512, kernel_size=3, stride=2, padding=1)
 
         self.Conv3_1 = ResBottleneck(512, Kernel_size=3, Padding=1)
         self.Conv3_2 = ResBottleneck(512, Kernel_size=3, Padding=1)
         self.Conv3_3 = ResBottleneck(512, Kernel_size=3, Padding=1)
-        self.Conv3_4 = ResBottleneck(512, Kernel_size=3, Padding=1)
 
-        self.ThirdConv = IncreaseChannel_ResBlock(512, 1024, kernel_size=3, stride=2, padding=1)
+        self.ThirdConv = IncreaseChannel_ResBottleneck(512, 1024, kernel_size=3, stride=2, padding=1)
 
         self.Conv4_1 = ResBottleneck(1024, Kernel_size=3, Padding=1)
         self.Conv4_2 = ResBottleneck(1024, Kernel_size=3, Padding=1)
         self.Conv4_3 = ResBottleneck(1024, Kernel_size=3, Padding=1)
         self.Conv4_4 = ResBottleneck(1024, Kernel_size=3, Padding=1)
         self.Conv4_5 = ResBottleneck(1024, Kernel_size=3, Padding=1)
-        self.Conv4_6 = ResBottleneck(1024, Kernel_size=3, Padding=1)
 
-        self.LastConv = IncreaseChannel_ResBlock(1024, 2048, kernel_size=3, stride=2, padding=1)
+        self.LastConv = IncreaseChannel_ResBottleneck(1024, 2048, kernel_size=3, stride=2, padding=1)
         
         self.Conv5_1 = ResBottleneck(2048, Kernel_size=3, Padding=1)
         self.Conv5_2 = ResBottleneck(2048, Kernel_size=3, Padding=1)
-        self.Conv5_3 = ResBottleneck(2048, Kernel_size=3, Padding=1)
 
-        self.GAP = nn.AvgPool2d(4)
-        self.Dense = nn.Linear(512,10)
+        self.GAP = nn.AvgPool2d(2)
+        self.Dense = nn.Linear(2048,10)
 
 
     def forward(self, x):
@@ -400,14 +396,12 @@ class ResNet50_forCIFAR10(nn.Module):
         
         x = self.Conv2_1(x)
         x = self.Conv2_2(x)
-        x = self.Conv2_3(x)
         
         x = self.SecondConv(x)
         
         x = self.Conv3_1(x)
         x = self.Conv3_2(x)
         x = self.Conv3_3(x)
-        x = self.Conv3_4(x)
         
         x = self.ThirdConv(x)
 
@@ -416,16 +410,14 @@ class ResNet50_forCIFAR10(nn.Module):
         x = self.Conv4_3(x)
         x = self.Conv4_4(x)
         x = self.Conv4_5(x)
-        x = self.Conv4_6(x)
 
         x = self.LastConv(x)
         
         x = self.Conv5_1(x)
         x = self.Conv5_2(x)
-        x = self.Conv5_3(x)
 
         x = self.GAP(x)
-        x = x.view(-1,512)
+        x = x.view(-1,2048)
         x = self.Dense(x)
 
 
