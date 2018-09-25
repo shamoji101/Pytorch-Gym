@@ -16,15 +16,15 @@ There is all ResNet model which is ResNet 18, 34, 50, 101 and 152 model.
 class ResBlock(nn.Module):
 
 
-    def __init__(self, Channel,Kernel_size=3, Padding=1, use_dropout=True):
+    def __init__(self, Channel,kernel_size=3, padding=1, use_dropout=True):
         super(ResBlock, self).__init__()
         self.C=Channel
-        self.K=Kernel_size
-        self.P=Padding
+        self.K=kernel_size
+        self.P=padding
         
-        self.FirstConv = nn.Conv2d(self.C,self.C,kernel_size=self.K, padding=Padding)
+        self.FirstConv = nn.Conv2d(self.C,self.C,kernel_size=self.K, padding=padding)
         self.bn1 = nn.BatchNorm2d(self.C)
-        self.LastConv = nn.Conv2d(self.C, self.C, kernel_size=self.K, padding=Padding)
+        self.LastConv = nn.Conv2d(self.C, self.C, kernel_size=self.K, padding=padding)
         self.bn2 = nn.BatchNorm2d(self.C)
         self.use_dropout = use_dropout
         self.dropout = nn.Dropout(p=0.25, inplace=False)
@@ -48,11 +48,11 @@ class ResBlock(nn.Module):
 
 class ResBottleneck(nn.Module):
     
-    def __init__(self, Channel, Kernel_size=3, Padding=1, use_dropout=True):
+    def __init__(self, Channel, kernel_size=3, padding=1, use_dropout=True):
         super(ResBottleneck, self).__init__()
         self.C = Channel
-        self.K = Kernel_size
-        self.P = Padding
+        self.K = kernel_size
+        self.P = padding
         self.C_small = self.C//4
         self.use_dropout = use_dropout
         
@@ -170,16 +170,16 @@ class pre_act_ResBlock(nn.Module):
     "Identity Mappings in Deep Residual Networks"
 
     """
-    def __init__(self, Channel, Kernel_size=3, Padding=1, use_dropout=True):
+    def __init__(self, Channel, kernel_size=3, padding=1, use_dropout=True):
         super(pre_act_ResBlock, self).__init__()
         
         self.C=Channel
-        self.K=Kernel_size
-        self.P=Padding
+        self.K=kernel_size
+        self.P=padding
         
-        self.FirstConv = nn.Conv2d(self.C,self.C,kernel_size=self.K, padding=Padding)
+        self.FirstConv = nn.Conv2d(self.C,self.C,kernel_size=self.K, padding=padding)
         self.bn1 = nn.BatchNorm2d(self.C)
-        self.LastConv = nn.Conv2d(self.C, self.C, kernel_size=self.K, padding=Padding)
+        self.LastConv = nn.Conv2d(self.C, self.C, kernel_size=self.K, padding=padding)
         self.bn2 = nn.BatchNorm2d(self.C)
         self.use_dropout = use_dropout
         self.dropout = nn.Dropout(p=0.25, inplace=False)
@@ -200,11 +200,11 @@ class pre_act_ResBlock(nn.Module):
 
 class pre_act_ResBottleneck(nn.Module):
 
-    def __init__(self, Channel, Kernel_size=3, Padding=1, use_dropout=True):
+    def __init__(self, Channel, kernel_size=3, padding=1, use_dropout=True):
         super(pre_act_ResBottleneck, self).__init__()
         
-        self.K = Kernel_size
-        self.P = Padding
+        self.K = kernel_size
+        self.P = padding
         self.C_small = self.C//4
         self.use_dropout = use_dropout
         
@@ -249,19 +249,19 @@ class ResNet18_forCIFAR10(nn.Module):
         
         self.FirstConv = IncreaseChannel_ResBlock(3,64, kernel_size=3, stride=1, padding=1)
         
-        self.Conv2_1 = ResBlock(64, Kernel_size=3, Padding=1)
+        self.Conv2_1 = ResBlock(64, kernel_size=3, padding=1)
 
         self.SecondConv = IncreaseChannel_ResBlock(64,128, kernel_size=3, stride=2, padding=1)
         
-        self.Conv3_1 = ResBlock(128, Kernel_size=3, Padding=1)
+        self.Conv3_1 = ResBlock(128, kernel_size=3, padding=1)
 
         self.ThirdConv = IncreaseChannel_ResBlock(128,256, kernel_size=3, stride=2, padding=1)
         
-        self.Conv4_1 = ResBlock(256, Kernel_size=3, Padding=1)
+        self.Conv4_1 = ResBlock(256, kernel_size=3, padding=1)
 
         self.LastConv = IncreaseChannel_ResBlock(256,512, kernel_size=3, stride=2, padding=1)
         
-        self.Conv5_1 = ResBlock(512, Kernel_size=3, Padding=1)
+        self.Conv5_1 = ResBlock(512, kernel_size=3, padding=1)
 
         self.GAP = nn.AvgPool2d(4)
         self.Dense = nn.Linear(512,10)
@@ -298,27 +298,27 @@ class ResNet34_forCIFAR10(nn.Module):
 
         self.FirstConv = IncreaseChannel_ResBlock(3,64, kernel_size=3, stride=1, padding=1)
 
-        self.Conv2_1 = ResBlock(64, Kernel_size=3, Padding=1)
-        self.Conv2_2 = ResBlock(64, Kernel_size=3, Padding=1)
+        self.Conv2_1 = ResBlock(64, kernel_size=3, padding=1)
+        self.Conv2_2 = ResBlock(64, kernel_size=3, padding=1)
 
         self.SecondConv = IncreaseChannel_ResBlock(64,128, kernel_size=3, stride=2, padding=1)
         
-        self.Conv3_1 = ResBlock(128, Kernel_size=3, Padding=1)
-        self.Conv3_2 = ResBlock(128, Kernel_size=3, Padding=1)
-        self.Conv3_3 = ResBlock(128, Kernel_size=3, Padding=1)        
+        self.Conv3_1 = ResBlock(128, kernel_size=3, padding=1)
+        self.Conv3_2 = ResBlock(128, kernel_size=3, padding=1)
+        self.Conv3_3 = ResBlock(128, kernel_size=3, padding=1)        
         
         self.ThirdConv = IncreaseChannel_ResBlock(128,256, kernel_size=3, stride=2, padding=1)
         
-        self.Conv4_1 = ResBlock(256, Kernel_size=3, Padding=1)
-        self.Conv4_2 = ResBlock(256, Kernel_size=3, Padding=1)
-        self.Conv4_3 = ResBlock(256, Kernel_size=3, Padding=1)
-        self.Conv4_4 = ResBlock(256, Kernel_size=3, Padding=1)
-        self.Conv4_5 = ResBlock(256, Kernel_size=3, Padding=1)
+        self.Conv4_1 = ResBlock(256, kernel_size=3, padding=1)
+        self.Conv4_2 = ResBlock(256, kernel_size=3, padding=1)
+        self.Conv4_3 = ResBlock(256, kernel_size=3, padding=1)
+        self.Conv4_4 = ResBlock(256, kernel_size=3, padding=1)
+        self.Conv4_5 = ResBlock(256, kernel_size=3, padding=1)
         
         self.LastConv = IncreaseChannel_ResBlock(256,512, kernel_size=3, stride=2, padding=1)
         
-        self.Conv5_1 = ResBlock(512, Kernel_size=3, Padding=1)
-        self.Conv5_2 = ResBlock(512, Kernel_size=3, Padding=1)
+        self.Conv5_1 = ResBlock(512, kernel_size=3, padding=1)
+        self.Conv5_2 = ResBlock(512, kernel_size=3, padding=1)
         
         self.GAP = nn.AvgPool2d(4)
         self.Dense = nn.Linear(512,10)
@@ -364,27 +364,27 @@ class ResNet50_forCIFAR10(nn.Module):
 
         self.FirstConv = IncreaseChannel_ResBottleneck(3, 256, kernel_size=3, stride=1, padding=1, isFirstConv=True)
 
-        self.Conv2_1 = ResBottleneck(256, Kernel_size=3, Padding=1)
-        self.Conv2_2 = ResBottleneck(256, Kernel_size=3, Padding=1)
+        self.Conv2_1 = ResBottleneck(256, kernel_size=3, padding=1)
+        self.Conv2_2 = ResBottleneck(256, kernel_size=3, padding=1)
 
         self.SecondConv = IncreaseChannel_ResBottleneck(256, 512, kernel_size=3, stride=2, padding=1)
 
-        self.Conv3_1 = ResBottleneck(512, Kernel_size=3, Padding=1)
-        self.Conv3_2 = ResBottleneck(512, Kernel_size=3, Padding=1)
-        self.Conv3_3 = ResBottleneck(512, Kernel_size=3, Padding=1)
+        self.Conv3_1 = ResBottleneck(512, kernel_size=3, padding=1)
+        self.Conv3_2 = ResBottleneck(512, kernel_size=3, padding=1)
+        self.Conv3_3 = ResBottleneck(512, kernel_size=3, padding=1)
 
         self.ThirdConv = IncreaseChannel_ResBottleneck(512, 1024, kernel_size=3, stride=2, padding=1)
 
-        self.Conv4_1 = ResBottleneck(1024, Kernel_size=3, Padding=1)
-        self.Conv4_2 = ResBottleneck(1024, Kernel_size=3, Padding=1)
-        self.Conv4_3 = ResBottleneck(1024, Kernel_size=3, Padding=1)
-        self.Conv4_4 = ResBottleneck(1024, Kernel_size=3, Padding=1)
-        self.Conv4_5 = ResBottleneck(1024, Kernel_size=3, Padding=1)
+        self.Conv4_1 = ResBottleneck(1024, kernel_size=3, padding=1)
+        self.Conv4_2 = ResBottleneck(1024, kernel_size=3, padding=1)
+        self.Conv4_3 = ResBottleneck(1024, kernel_size=3, padding=1)
+        self.Conv4_4 = ResBottleneck(1024, kernel_size=3, padding=1)
+        self.Conv4_5 = ResBottleneck(1024, kernel_size=3, padding=1)
 
         self.LastConv = IncreaseChannel_ResBottleneck(1024, 2048, kernel_size=3, stride=2, padding=1)
         
-        self.Conv5_1 = ResBottleneck(2048, Kernel_size=3, Padding=1)
-        self.Conv5_2 = ResBottleneck(2048, Kernel_size=3, Padding=1)
+        self.Conv5_1 = ResBottleneck(2048, kernel_size=3, padding=1)
+        self.Conv5_2 = ResBottleneck(2048, kernel_size=3, padding=1)
 
         self.GAP = nn.AvgPool2d(4)
         self.Dense = nn.Linear(2048,10)
@@ -432,6 +432,6 @@ class ResNet101_ForCIFAR10(nn.Module):
 
         self.FirstConv = IncreaseChannel_ResBlock(3, 64, kernel_size=3, stride=1, padding=1)
 
-        self.Conv2_1 = ResBottleneck(64, Kernel_size=3, Padding=1)
+        self.Conv2_1 = ResBottleneck(64, kernel_size=3, padding=1)
 """     
 
