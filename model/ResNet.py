@@ -9,8 +9,6 @@ You can get the paper of ResNet from
 https://arxiv.org/abs/1512.03385
 this page.
 
-There is all ResNet model which is ResNet 18, 34, 50, 101 and 152 model.
-
 """
 
 class ResBlock(nn.Module):
@@ -422,16 +420,3 @@ class ResNet50_forCIFAR10(nn.Module):
 
 
         return x
-
-        
-"""
-class ResNet101_ForCIFAR10(nn.Module):
-
-    def __init__(self):
-        super(ResNet101_ForCIFAR10, self).__init__()
-
-        self.FirstConv = IncreaseChannel_ResBlock(3, 64, kernel_size=3, stride=1, padding=1)
-
-        self.Conv2_1 = ResBottleneck(64, kernel_size=3, padding=1)
-"""     
-
